@@ -119,8 +119,12 @@ def posneg(value, max_value=None, skim=0, nan_color=(0.5, 0.5, 0.5), zero_color=
 
 @dataclass
 class BraitenbergAgentConfig:
-    gain: float = 0.5
-    const: float = 0.1
+#    gain: float = 0.5
+ #   const: float = 0.1
+
+# cchang test
+    gain: float = 0.3  # Cuánto cambia la velocidad de cada rueda según los patos que ve (más alto = gira con más fuerza)
+    const: float = 0.1 # velocidad mínima de cada rueda (al frenar por un pato o al arrancar)
 
 
 class BraitenbergAgent:

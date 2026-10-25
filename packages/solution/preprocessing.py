@@ -11,6 +11,12 @@ upper_hsv = np.array([30, 255, 255])
 # upper_hsv = np.array([31, 255, 255])
 
 
+# real images mecaduckie00
+# lower_hsv = np.array([3, 92, 0])
+# upper_hsv = np.array([24, 226, 255])
+
+
+
 def preprocess(image_rgb: np.ndarray) -> np.ndarray:
     """Returns a 2D array"""
     hsv = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2HSV)
