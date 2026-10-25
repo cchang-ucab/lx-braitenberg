@@ -180,9 +180,9 @@ class BraitenbergAgent:
             self.left = get_motor_left_matrix(shape)
             self.right = get_motor_right_matrix(shape)
 
-        from matplotlib import pyplot as plt
-        plt.imshow(self.rgb, interpolation='nearest')
-        plt.show()
+        #from matplotlib import pyplot as plt
+        #plt.imshow(self.rgb, interpolation='nearest')
+        #plt.show()
         # let's take only the intensity of RGB
         P = preprocess(self.rgb)
         # now we just compute the activation of our sensors
@@ -222,9 +222,20 @@ class BraitenbergAgent:
         print(f"rs = {rs}")
         gain = self.config.gain
         const = self.config.const
-        pwm_left = const + ls * gain
-        pwm_right = const + rs * gain
 
+        #original
+        #pwm_left = const + ls * gain
+        #pwm_right = const + rs * gain
+
+        #cchang test
+        # A small random variation breaks ties (corners, obstacles on both sides)
+        #pwm_left = const + ls * gain + np.random.uniform(-0.05, 0.05)
+        #pwm_right = const + rs * gain + np.random.uniform(-0.05, 0.05)
+        
+        # Slowly-changing random turn: it lasts long enough to escape corners
+        self.turn = 0.92 * getattr(self, "turn", 0.0) + 0.05 * np.random.uniform(-1, 1)
+        pwm_left = const + ls * gain + self.turn
+        pwm_right = const + rs * gain - self.turn
         return pwm_left, pwm_right
 
 
