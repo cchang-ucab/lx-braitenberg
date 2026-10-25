@@ -123,8 +123,8 @@ class BraitenbergAgentConfig:
  #   const: float = 0.1
 
 # cchang test
-    gain: float = 0.3  # Cuánto cambia la velocidad de cada rueda según los patos que ve (más alto = gira con más fuerza)
-    const: float = 0.1 # velocidad mínima de cada rueda (al frenar por un pato o al arrancar)
+    gain: float = 0.4  # Cuánto cambia la velocidad de cada rueda según los patos que ve (más alto = gira con más fuerza)
+    const: float = -0.1 # velocidad mínima de cada rueda (al frenar por un pato o al arrancar)
 
 
 class BraitenbergAgent:
@@ -140,8 +140,16 @@ class BraitenbergAgent:
 
     def __init__(self):
         self.rgb = None
-        self.l_max = -500000.0
-        self.r_max = -500000.0
+        
+        #Original
+        #self.l_max = -500000.0
+        #self.r_max = -500000.0
+
+        #cchang test
+        self.l_max = -math.inf   # start with no limit, so any signal size works
+        self.r_max = -math.inf
+
+        #
         self.l_min = math.inf
         self.r_min = math.inf
         self.left = None
@@ -197,9 +205,20 @@ class BraitenbergAgent:
         print(f"r_min = {self.r_min}")
 
         # now rescale from 0 to 1
-        ls = rescale(l, self.l_min, self.l_max)
+        #original
+        #ls = rescale(l, self.l_min, self.l_max)
+        
+        #cchang test
+        # Use the same scale for both sides, so they can be compared
+        low = min(self.l_min, self.r_min)
+        high = max(self.l_max, self.r_max)
+        ls = rescale(l, low, high)
         print(f"ls = {ls}")
-        rs = rescale(r, self.r_min, self.r_max)
+        #original
+        #rs = rescale(r, self.r_min, self.r_max)
+        
+        #cchang test
+        rs = rescale(r, low, high)
         print(f"rs = {rs}")
         gain = self.config.gain
         const = self.config.const
