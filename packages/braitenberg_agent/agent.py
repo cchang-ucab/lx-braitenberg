@@ -23,8 +23,9 @@ from solution.preprocessing import preprocess
 
 def rescale(a: float, L: float, U: float):
     if np.allclose(L, U):
-        return 0.0
+        return 1.0   # nothing seen yet: treat as clear (no braking)
     return (a - L) / (U - L)
+
 
 def rgb_from_jpg(filename: str) -> np.ndarray:
     """
@@ -119,12 +120,17 @@ def posneg(value, max_value=None, skim=0, nan_color=(0.5, 0.5, 0.5), zero_color=
 
 @dataclass
 class BraitenbergAgentConfig:
+ # Original   
 #    gain: float = 0.5
  #   const: float = 0.1
 
-# cchang test
-    gain: float = 0.4  # Cuánto cambia la velocidad de cada rueda según los patos que ve (más alto = gira con más fuerza)
-    const: float = -0.1 # velocidad mínima de cada rueda (al frenar por un pato o al arrancar)
+# cchang test simulator 
+ #   gain: float = 0.4  # Cuánto cambia la velocidad de cada rueda según los patos que ve (más alto = gira con más fuerza)
+ #   const: float = -0.1 # velocidad mínima de cada rueda (al frenar por un pato o al arrancar)
+
+# cchang test mecaduckie
+    gain: float = 0.3  # Cuánto cambia la velocidad de cada rueda según los patos que ve (más alto = gira con más fuerza)
+    const: float = -0.15 # velocidad mínima de cada rueda (al frenar por un pato o al arrancar)
 
 
 class BraitenbergAgent:
@@ -233,7 +239,7 @@ class BraitenbergAgent:
         #pwm_right = const + rs * gain + np.random.uniform(-0.05, 0.05)
         
         # Slowly-changing random turn: it lasts long enough to escape corners
-        self.turn = 0.92 * getattr(self, "turn", 0.0) + 0.05 * np.random.uniform(-1, 1)
+        self.turn = 0.9 * getattr(self, "turn", 0.0) + 0.05 * np.random.uniform(-1, 1)
         pwm_left = const + ls * gain + self.turn
         pwm_right = const + rs * gain - self.turn
         return pwm_left, pwm_right

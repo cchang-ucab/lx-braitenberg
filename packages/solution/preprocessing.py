@@ -5,18 +5,26 @@ import numpy as np
 #lower_hsv = np.array([20, 100, 100])
 #upper_hsv = np.array([30, 255, 255])
 
-#cchang test
+#cchang simulator test
 lower_hsv = np.array([15, 50, 50])
 upper_hsv = np.array([40, 255, 255])
+
+
 # real images
 # lower_hsv = np.array([12, 89, 76])
 # upper_hsv = np.array([31, 255, 255])
 
 
 # real images mecaduckie00
-# lower_hsv = np.array([3, 92, 0])
-# upper_hsv = np.array([24, 226, 255])
 
+#lower_hsv = np.array([3, 92, 0])
+#upper_hsv = np.array([24, 226, 255])
+
+#lower_hsv = np.array([18, 120, 150])
+#upper_hsv = np.array([32, 255, 255])
+
+#lower_hsv = np.array([5, 90, 170])
+#upper_hsv = np.array([28, 255, 255])
 
 #original
 #def preprocess(image_rgb: np.ndarray) -> np.ndarray:
@@ -32,10 +40,15 @@ MIN_BRIGHTNESS_NOT_BLACK = 150
 
 def preprocess(image_rgb: np.ndarray) -> np.ndarray:
     """Returns a 2D array"""
-    hsv = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2HSV)
+    #hsv = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2HSV)
+    hsv = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)  # the physical robot sends BGR images
     # Duckies: count as 255
     duckie_mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
     # Everything that is NOT black (high brightness): the edge of the area
     not_black_mask = cv2.inRange(hsv, np.array([0, 0, MIN_BRIGHTNESS_NOT_BLACK]), np.array([179, 255, 255]))
+
+    #image debug 
+    #cv2.imwrite("/tmp/agent_rgb.png", image_rgb)  # what the code receives
+    #cv2.imwrite("/tmp/agent_mask.png", duckie_mask)                              # what it detects as duckie
     # The edge counts less (30%), so it does not "hide" the duckies
-    return duckie_mask.astype(np.float32) + 0.1 * not_black_mask.astype(np.float32)
+    return duckie_mask.astype(np.float32) + 0.3 * not_black_mask.astype(np.float32)
